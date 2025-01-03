@@ -45,27 +45,22 @@ export class PerspectiveCamera extends Camera {
       }
 
       /**
-       * 
+       * [link to explanation](https://webglfundamentals.org/webgl/lessons/webgl-3d-perspective.html)
        * @returns {Mat4x4}
        */
       getMatrix(){
-
             const n = this.#near;
             const f = this.#far;
-            const O = Math.tan( this.#fow / 2 );
+            const O = Math.tan( 1.5707963268 - this.#fow * 0.5 );
             const a = this.#ratio;
 
-            const r = a*n*O;
-            const l = -r;
+            const r = 1.0 / (this.#near - this.#far);
 
-            const b = n*O;
-            const t = -b;
-
-            return [ 
-                  2*n/(r-l), 0, (r+l)/(r-l), 0,
-                  0, 2*n/(t-b), (t+b)/(t-b), 0,
-                  0, 0, (f+n)/(n-f), 2*f*n/(n-f),
-                  0,0,-a,0,
+            return [
+                  O / a, 0, 0, 0,
+                  0, O, 0, 0,
+                  0, 0, (n + f) * r, -1,
+                  0, 0, n * f * r * 2, 0
             ];
       }
 
